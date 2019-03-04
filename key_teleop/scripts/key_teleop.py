@@ -107,7 +107,7 @@ class KeyTeleop():
         self._angular = 0
 
         rate = rospy.Rate(self._hz)
-        while True:
+        while not rospy.is_shutdown():
             keycode = self._interface.read_key()
             if keycode:
                 if self._key_pressed(keycode):
@@ -135,6 +135,7 @@ class KeyTeleop():
         speed_bindings = {
             ord(' '): (0, 0),
         }
+
         if keycode in movement_bindings:
             acc = movement_bindings[keycode]
             ok = False
@@ -254,7 +255,7 @@ class SimpleKeyTeleop():
 
 def main(stdscr):
     rospy.init_node('key_teleop')
-    app = SimpleKeyTeleop(TextWindow(stdscr))
+    app = KeyTeleop(TextWindow(stdscr))
     app.run()
 
 if __name__ == '__main__':
