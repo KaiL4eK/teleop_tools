@@ -167,8 +167,15 @@ class KeyTeleop():
         return True
 
     def _publish(self):
+        if self._linear >= 0:
+            mps_linear = self._forward(1.0, self._linear)
+        else:
+            mps_linear = self._backward(-1.0, -self._linear)
+        steer_rad = self._rotation(math.copysign(1, self._angular), abs(self._angular))
+        steer_deg = math.degrees(steer_rad)
+
         self._interface.clear()
-        self._interface.write_line(2, 'Linear: %d, Angular: %d' % (self._linear, self._angular))
+        self._interface.write_line(2, 'Linear: %.3f [mps], Angular: %.3f [deg]' % (mps_linear, steer_deg))
         self._interface.write_line(5, 'Use arrow keys to move, space to stop, q to exit.')
         self._interface.refresh()
 
